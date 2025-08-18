@@ -1,0 +1,71 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: localnews-postgres
+    restart: always
+    environment:
+      POSTGRES_DB: local_news
+      POSTGRES_USER: local_news_user
+      POSTGRES_PASSWORD: local_news_pass
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U local_news_user -d local_news"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks: [localnet]
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: localnews-backend
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/local_news
+      SPRING_DATASOURCE_USERNAME: local_news_user
+      SPRING_DATASOURCE_PASSWORD: local_news_pass
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+    expose:
+      - "8080"
+    networks: [localnet]
+
+  frontend-build:
+    image: node:20-alpine
+    container_name: localnews-fe-build
+    working_dir: /app
+    environment:
+      VITE_API_BASE: ""   # важное: фронт будет ходить на /api/ через nginx
+    command: sh -c "npm ci && npm run build && rm -rf /out/* && cp -r dist/* /out/"
+    volumes:
+      - ./frontend:/app:rw
+      - frontend_dist:/out
+    networks: [localnet]
+
+  nginx:
+    image: nginx:alpine
+    container_name: localnews-nginx
+    restart: always
+    depends_on:
+      - backend
+    volumes:
+      - frontend_dist:/usr/share/nginx/html:ro
+      - ./infra/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    ports:
+      - "80:80"
+    networks: [localnet]
+
+volumes:
+  pgdata:
+  frontend_dist:
+
+networks:
+  localnet:
+    driver: bridge
