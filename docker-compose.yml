@@ -42,7 +42,7 @@ services:
     container_name: localnews-fe-build
     working_dir: /app
     environment:
-      VITE_API_BASE: ""   # важное: фронт будет ходить на /api/ через nginx
+      VITE_API_BASE: "" 
     command: sh -c "npm ci && npm run build && rm -rf /out/* && cp -r dist/* /out/"
     volumes:
       - ./frontend:/app:rw

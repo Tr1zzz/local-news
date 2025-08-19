@@ -24,14 +24,12 @@ public class OpenAiClient {
             @Value("${openai.model:gpt-4o-mini}") String model,
             @Value("${openai.timeoutSec:30}") int timeoutSec
     ) {
-        // базовый URL без конечной ручки — её укажем в .uri(...)
         this.webClient = builder.baseUrl("https://api.openai.com/v1").build();
         this.apiKey = apiKey;
         this.model = model;
         this.timeout = Duration.ofSeconds(timeoutSec);
     }
 
-    /** Реактивно */
     public Mono<String> classify(String systemPrompt, String userPrompt) {
         Map<String, Object> body = Map.of(
                 "model", model,
@@ -52,7 +50,6 @@ public class OpenAiClient {
                 .bodyToMono(Map.class)
                 .timeout(timeout)
                 .map(resp -> {
-                    // resp: { choices: [ { message: { content: "..."} } ] }
                     List<?> choices = (List<?>) resp.get("choices");
                     if (choices == null || choices.isEmpty()) return "";
                     Object first = choices.get(0);
@@ -66,7 +63,6 @@ public class OpenAiClient {
                 });
     }
 
-    /** Удобный блокирующий метод, если не хочешь возиться с Mono */
     public String classifySync(String systemPrompt, String userPrompt) {
         return classify(systemPrompt, userPrompt).block(timeout);
     }

@@ -1,9 +1,8 @@
-// api.ts
 import type { CityDto, NewsItemDto } from "./types";
 
 const BASE = import.meta.env.VITE_API_BASE ?? "http://localhost:8080";
 
-/** Получить новости (по городу или общий фид) */
+/** Get news (by city or general feed) */
 export async function fetchNews(params: {
   cityId?: number;
   page?: number;
@@ -21,7 +20,7 @@ export async function fetchNews(params: {
   return (await res.json()) as NewsItemDto[];
 }
 
-/** Переклассифицировать свежую пачку raw-новостей */
+/** Reclassify a fresh batch of raw news */
 type ClassifyResponse = { classified: number; totalItems: number };
 
 export async function classifyBatch(limit = 50): Promise<ClassifyResponse> {
@@ -32,7 +31,7 @@ export async function classifyBatch(limit = 50): Promise<ClassifyResponse> {
   return (await res.json()) as ClassifyResponse;
 }
 
-/** Подсказки городов для автокомплита */
+/** City suggestions for autocomplete */
 export async function fetchCitySuggestions(
   query: string,
   limit = 10

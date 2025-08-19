@@ -23,7 +23,7 @@ export default function CitySearch({ onSelect, initialLabel }: Props) {
     return () => document.removeEventListener("click", onDocClick);
   }, []);
 
-  // debounce простым способом
+  // debounce
   useEffect(() => {
     if (!q.trim()) {
       setItems([]);

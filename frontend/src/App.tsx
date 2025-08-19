@@ -12,9 +12,9 @@ export default function App() {
   const [news, setNews] = useState<NewsItemDto[]>([]);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(0);
-  const [scope, setScope] = useState<Scope>("local"); // <— фильтр
+  const [scope, setScope] = useState<Scope>("local"); // <— filter
 
-  // для «вверх/вниз»
+  // for "up/down"
   const listEndRef = useRef<HTMLDivElement | null>(null);
   const [showTopBtn, setShowTopBtn] = useState(false);
 
@@ -30,7 +30,7 @@ export default function App() {
   }
 
   useEffect(() => {
-    load(undefined, 0, scope); // стартовая
+    load(undefined, 0, scope); // initial load
     const onScroll = () => setShowTopBtn(window.scrollY > 400);
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -39,7 +39,7 @@ export default function App() {
 
   async function onCityPick(city: CityDto) {
     setSelected(city);
-    setScope("local");             // для города оставляем локальный фид
+    setScope("local");             // keep local feed for a city
     await load(city.id, 0, "local");
     scrollToTop();
   }
@@ -94,7 +94,7 @@ export default function App() {
           </button>
         )}
 
-        {/* Переключатель фида */}
+        {/* Feed switcher */}
         {!selected && (
           <div style={{ display: "flex", gap: 6 }}>
             {(["local","global","all"] as Scope[]).map(s => (
@@ -154,7 +154,7 @@ export default function App() {
         </button>
       </footer>
 
-      {/* Плавающие кнопки быстрого скролла */}
+      {/* Floating quick scroll buttons */}
       <div style={{ position: "fixed", right: 16, bottom: 16, display: "flex", flexDirection: "column", gap: 8, zIndex: 50 }}>
         {showTopBtn && (
           <button className="btn" onClick={scrollToTop} style={{ padding: "10px 14px", borderRadius: 999 }} aria-label="Scroll to top">

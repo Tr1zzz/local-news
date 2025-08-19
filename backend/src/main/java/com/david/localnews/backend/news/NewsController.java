@@ -27,7 +27,6 @@ public class NewsController {
         var pageable = PageRequest.of(Math.max(0, page), Math.min(size, 100));
 
         if (cityId != null) {
-            // если выбран город — показываем новости этого города (они по определению «local»)
             return newsRepo.findByCityIdOrderByDecidedAtDesc(cityId, pageable)
                     .map(NewsItemDto::from).getContent();
         }

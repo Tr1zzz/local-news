@@ -16,21 +16,17 @@ public class City {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    /** Пример: "New York" */
     @Column(nullable = false)
     private String name;
 
-    /** Двухбуквенный код штата: NY, CA, TX... */
     @Column(length = 2, nullable = false)
     private String stateId;
 
-    /** Полное имя штата: "New York" */
     @Column(nullable = false)
     private String stateName;
 
     private Double lat;
     private Double lon;
 
-    /** Можно null, если у источника нет населения */
     private Integer population;
 }

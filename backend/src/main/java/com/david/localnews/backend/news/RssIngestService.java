@@ -46,17 +46,12 @@ public class RssIngestService {
     @Value("${app.ingest.templates.googleCity}")
     private String googleCityTemplate;
 
-    // старые глобальные ленты читаем из YAML
     @Value("#{'${app.rss.global}'.split(',')}")
     private List<String> globalFeeds;
 
     private static final int CONNECT_TIMEOUT_MS = 6000;
     private static final int READ_TIMEOUT_MS    = 10000;
 
-    /**
-     * Основной запуск. Можно вызывать из контроллера.
-     * Позволяет переопределить параметры через query-параметры (если null — берем значения из YAML).
-     */
     @Transactional
     public int ingestAll(Integer overrideTopCities,
                          Integer overrideLocalMaxPerFeed,
@@ -66,7 +61,6 @@ public class RssIngestService {
         final int localLimit   = (overrideLocalMaxPerFeed != null) ? overrideLocalMaxPerFeed : localMaxPerFeed;
         final int globalLimit  = (overrideGlobalMaxPerFeed != null) ? overrideGlobalMaxPerFeed : globalMaxPerFeed;
 
-        // 1) Сформируем локальные фиды для топ-городов
         List<String> localFeeds = buildCityFeeds(citiesToTake);
 
         int inserted = 0;
@@ -81,13 +75,11 @@ public class RssIngestService {
         return inserted;
     }
 
-    // старый метод обратно совместим: если кто-то дергает ingestAll(maxPerFeed)
     @Transactional
     public int ingestAll(int maxPerFeed) {
         return ingestAll(null, maxPerFeed, maxPerFeed);
     }
 
-    /** Генерируем Google News RSS URL для каждого города вида "City ST". */
     private List<String> buildCityFeeds(int limit) {
         var page = cityRepo.topByPopulation(PageRequest.of(0, Math.max(1, limit)));
         List<City> cities = page.getContent();
@@ -116,7 +108,6 @@ public class RssIngestService {
                 log.warn("Skip feed {} due to error: {}", url, e.getMessage());
             }
 
-            // легкий троттлинг против rate-limit
             if (delayMs > 0) {
                 try { Thread.sleep(delayMs); } catch (InterruptedException ignored) { Thread.currentThread().interrupt(); }
             }

@@ -2,7 +2,6 @@ package com.david.localnews.backend.city;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,10 +17,6 @@ public class CityCsvImporter {
 
     private final CityRepository cityRepository;
 
-    /**
-     * Импортирует data/us_cities.csv из корня проекта (resources не нужен — читаем как файл).
-     * На проде можно хранить в resources, но для удобства рекрут-теста читаем из ../data.
-     */
     @Transactional
     public void importIfEmpty() {
         long count = cityRepository.count();
@@ -30,9 +25,7 @@ public class CityCsvImporter {
             return;
         }
 
-        // Путь к файлу относительно backend/ (берем из корня проекта через системное свойство user.dir)
         String projectRoot = System.getProperty("user.dir"); // .../local-news/backend
-        // поднимаемся на уровень выше и идем в data
         String path = projectRoot.replace("\\", "/")
                 .replaceFirst("/backend$", "") + "/data/us_cities.csv";
 
@@ -43,14 +36,13 @@ public class CityCsvImporter {
         try (var reader = new BufferedReader(
                 new InputStreamReader(new java.io.FileInputStream(path), StandardCharsets.UTF_8))) {
 
-            String header = reader.readLine(); // пропускаем заголовок
+            String header = reader.readLine();
             if (header == null || !header.toLowerCase().startsWith("city,")) {
                 throw new IllegalStateException("us_cities.csv: wrong or missing header line");
             }
 
             String line;
             while ((line = reader.readLine()) != null) {
-                // простый CSV: значения без запятых внутри. Если планируешь кавычки/запятые — переключим на OpenCSV.
                 String[] p = line.split(",", -1);
                 if (p.length < 6) continue;
 

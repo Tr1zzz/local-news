@@ -1,5 +1,5 @@
 export type CityDto = {
-  id: number;          // Long в БД — в TS number
+  id: number;          
   name: string;
   stateId: string;
   stateName: string;
