@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { fetchCitySuggestions } from "../api";
-import type { CityDto } from "../types";
+import { fetchCitySuggestions } from '../api/city'
+import type { CityDto } from '../types/city'
 
 type Props = {
   onSelect: (city: CityDto) => void;

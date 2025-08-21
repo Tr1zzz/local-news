@@ -1,4 +1,4 @@
-import type { NewsItemDto } from "../types";
+import type { NewsItemDto } from '../types/news'
 
 export default function NewsCard({ item }: { item: NewsItemDto }) {
   const host = useHost(item.url);

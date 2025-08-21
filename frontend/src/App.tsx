@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import CitySearch from "./components/CitySearch";
 import NewsCard from "./components/NewsCard";
-import { classifyBatch, fetchNews } from "./api";
-import type { CityDto, NewsItemDto } from "./types";
+import { fetchNews, classifyBatch } from '././api/news'
+import type { CityDto } from '././types/city'
+import type { NewsItemDto } from '././types/news'
 import "./index.css";
 
 type Scope = "local" | "global" | "all";

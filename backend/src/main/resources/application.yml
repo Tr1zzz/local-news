@@ -12,7 +12,7 @@ spring:
       pool-name: LocalNewsHikari
   jpa:
     hibernate:
-      ddl-auto: update         # временно; после стабилизации можно поставить validate
+      ddl-auto: update
     open-in-view: false
     show-sql: false
     properties:
@@ -41,12 +41,12 @@ logging:
 
 app:
   ingest:
-    topCities: 100                 # сколько городов брать по населению (из твоей таблицы city)
-    delayMsBetweenCalls: 200       # пауза между запросами (anti rate-limit)
+    topCities: 100
+    delayMsBetweenCalls: 200
     local:
-      maxPerFeed: 2                # сколько статей брать на один город
+      maxPerFeed: 2
     global:
-      maxPerFeed: 8                # сколько статей брать из каждой глобальной ленты
+      maxPerFeed: 8
     templates:
       googleCity: "https://news.google.com/rss/search?q=%s&hl=en-US&gl=US&ceid=US:en"  # %s => "City ST" (URL-encoded)
 
