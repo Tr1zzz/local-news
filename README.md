@@ -69,12 +69,16 @@ git clone <your-repo-link>
 cd local-news
 ```
 ### Backend (Spring Boot + PostgreSQL)
+```bash
 ./mvnw spring-boot:run
+```
 
 ### Frontend (React + Vite)
+```bash
 cd frontend
 npm install
 npm run dev
+```
 
 ### Access the app
 Frontend: http://localhost:5173
